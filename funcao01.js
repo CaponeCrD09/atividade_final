@@ -1,34 +1,25 @@
-const fs = require("fs").promises;
+const fs = require("fs"); // IMPORTAÇÃO QUE FALTAVA
 
-/**
- * Lê um arquivo JSON e retorna um array de produtos.
- * @param {string} caminhoArquivo - Caminho do arquivo JSON
- * @returns {Promise<Array>} - Array de produtos
- */
-async function carregarProdutos(caminhoArquivo) {
-  try {
-    // Lê o arquivo como texto
-    const conteudo = await fs.readFile(caminhoArquivo, "utf-8");
+// Array global de produtos (exemplo)
+let produtos = [
+    { id: 1, nome: "Mouse", preco: 50 },
+    { id: 2, nome: "Teclado", preco: 120 }
+];
 
-    // Converte o texto para objeto/array
-    const produtos = JSON.parse(conteudo);
+function salvarDados(caminhoArquivo) {
+    try {
+        // Converte o array produtos para JSON formatado
+        const conteudo = JSON.stringify(produtos, null, 4);
 
-    return produtos;
-  } catch (erro) {
-    // Tratamento de erros
-    if (erro.code === "ENOENT") {
-      console.error("❌ Arquivo não encontrado:", caminhoArquivo);
-    } else if (erro instanceof SyntaxError) {
-      console.error("❌ JSON inválido no arquivo:", caminhoArquivo);
-    } else {
-      console.error("❌ Erro ao ler o arquivo:", erro.message);
+        // Grava o conteúdo no arquivo
+        fs.writeFileSync(caminhoArquivo, conteudo, "utf8");
+
+        console.log("✅ Dados salvos com sucesso!");
+        return true;
+    } catch (erro) {
+        console.error("❌ Erro ao salvar dados:", erro.message);
+        return false;
     }
-    return []; // retorna array vazio em caso de falha
-  }
 }
 
-// Exemplo de uso:
-(async () => {
-  const produtos = await carregarProdutos("./input.json");
-  console.log(produtos);
-})();
+module.exports = { salvarDados, produtos };
