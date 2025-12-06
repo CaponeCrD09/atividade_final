@@ -47,13 +47,4 @@ function cadastrarProduto(produtos) {
 // let produtos = [];
 // cadastrarProduto(produtos);
 
-//versão previa/ primeira ideia
 
-
-if(produtos== array){
-
-
-    console.log("")
-}else{
-    console.log("Produto não fora de estoque ou inexistente")
-};  
