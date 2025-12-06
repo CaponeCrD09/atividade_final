@@ -50,7 +50,7 @@ function cadastrarProduto(produtos) {
 //versão previa/ primeira ideia
 
 
-if(id == array){
+if(produtos== array){
 
 
     console.log("")
