@@ -174,3 +174,67 @@ function atualizarProduto() {
     // 7. Confirma a atualização
     alert("✅ Produto atualizado com sucesso!");
 }
+
+const readline = require('readline');
+
+// ------------------------
+// FUNÇÃO 3 – Cadastrar Produto
+// ------------------------
+function cadastrarProduto(produtos) {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    rl.question("Digite o ID do produto: ", (id_prod) => {
+
+        const produtoExistente = produtos.find(prod => prod.id === id_prod);
+        if (produtoExistente) {
+            console.log("Erro: Já existe um produto com este ID. Cadastro não realizado.");
+            rl.close();
+            return;
+        }
+
+        rl.question("Digite o nome do produto: ", (nome) => {
+            rl.question("Digite a categoria do produto: ", (categoria) => {
+                rl.question("Digite o preço do produto: ", (precoStr) => {
+                    const preco = parseFloat(precoStr);
+
+                    rl.question("Digite a quantidade em estoque: ", (quantidadeStr) => {
+                        const quantidadeEmEstoque = parseInt(quantidadeStr);
+
+                        const produto = {
+                            id: id_prod,
+                            nome: nome,
+                            categoria: categoria,
+                            preco: preco,
+                            quantidadeEmEstoque: quantidadeEmEstoque
+                        };
+
+                        produtos.push(produto);
+                        console.log("Produto cadastrado com sucesso!");
+
+                        rl.close();
+                    });
+                });
+            });
+        });
+    });
+}
+
+// ------------------------
+// FUNÇÃO 8 – Filtrar produtos por categoria
+// ------------------------
+function filtrarPorCategoria(produtos, categoria) {
+    const filtrados = produtos.filter(produto => produto.categoria === categoria);
+
+    if (filtrados.length === 0) {
+        console.log("\nNenhum produto encontrado nessa categoria.");
+    } else {
+        console.log("\n=== PRODUTOS DA CATEGORIA:", categoria, "===\n");
+        console.log(filtrados);
+    }
+
+    return filtrados;
+}
+
