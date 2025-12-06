@@ -1,232 +1,86 @@
-const readline = require('readline');
-
-function cadastrarProduto(produtos) {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    rl.question("Digite o ID do produto: ", (id_prod) => {
-        // Verifica se já existe um produto com o mesmo ID
-        const produtoExistente = produtos.find(prod => prod.id === id_prod);
-        if (produtoExistente) {
-            console.log("Erro: Já existe um produto com este ID. Cadastro não realizado.");
-            rl.close();
-            return;
-        }
-
-        rl.question("Digite o nome do produto: ", (nome) => {
-            rl.question("Digite a categoria do produto: ", (categoria) => {
-                rl.question("Digite o preço do produto: ", (precoStr) => {
-                    const preco = parseFloat(precoStr);
-                    rl.question("Digite a quantidade em estoque: ", (quantidadeStr) => {
-                        const quantidadeEmEstoque = parseInt(quantidadeStr);
-
-                        // Cria o objeto produto
-                        const produto = {
-                            id: id_prod,
-                            nome: nome,
-                            categoria: categoria,
-                            preco: preco,
-                            quantidadeEmEstoque: quantidadeEmEstoque
-                        };
-
-                        // Adiciona o produto ao array
-                        produtos.push(produto);
-                        console.log("Produto cadastrado com sucesso!");
-
-                        rl.close();
-                    });
-                });
-            });
-        });
-    });
-}
-
-// Exemplo de uso (para testar, descomente as linhas abaixo):
-// let produtos = [];
-// cadastrarProduto(produtos);
-
-const readline = require('readline');
-
-function cadastrarProduto(produtos) {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    rl.question("Digite o ID do produto: ", (id_prod) => {
-        // Verifica se já existe um produto com o mesmo ID
-        const produtoExistente = produtos.find(prod => prod.id === id_prod);
-        if (produtoExistente) {
-            console.log("Erro: Já existe um produto com este ID. Cadastro não realizado.");
-            rl.close();
-            return;
-        }
-
-        rl.question("Digite o nome do produto: ", (nome) => {
-            rl.question("Digite a categoria do produto: ", (categoria) => {
-                rl.question("Digite o preço do produto: ", (precoStr) => {
-                    const preco = parseFloat(precoStr);
-                    rl.question("Digite a quantidade em estoque: ", (quantidadeStr) => {
-                        const quantidadeEmEstoque = parseInt(quantidadeStr);
-
-                        // Cria o objeto produto
-                        const produto = {
-                            id: id_prod,
-                            nome: nome,
-                            categoria: categoria,
-                            preco: preco,
-                            quantidadeEmEstoque: quantidadeEmEstoque
-                        };
-
-                        // Adiciona o produto ao array
-                        produtos.push(produto);
-                        console.log("Produto cadastrado com sucesso!");
-
-                        rl.close();
-                    });
-                });
-            });
-        });
-    });
-}
-
-// Exemplo de uso (para testar, descomente as linhas abaixo):
-// let produtos = [];
-// cadastrarProduto(produtos);
-
+// ===============================
+// IMPORT INPUT ASSÍNCRONO
+// ===============================
+const input = require("./input");
 const fs = require("fs").promises;
 
-/**
- * Lê um arquivo JSON e retorna um array de produtos.
- * @param {string} caminhoArquivo - Caminho do arquivo JSON
- * @returns {Promise<Array>} - Array de produtos
- */
-async function carregarProdutos(caminhoArquivo) {
-  try {
-    // Lê o arquivo como texto
-    const conteudo = await fs.readFile(caminhoArquivo, "utf-8");
-
-    // Converte o texto para objeto/array
-    const produtos = JSON.parse(conteudo);
-
-    return produtos;
-  } catch (erro) {
-    // Tratamento de erros
-    if (erro.code === "ENOENT") {
-      console.error("❌ Arquivo não encontrado:", caminhoArquivo);
-    } else if (erro instanceof SyntaxError) {
-      console.error("❌ JSON inválido no arquivo:", caminhoArquivo);
-    } else {
-      console.error("❌ Erro ao ler o arquivo:", erro.message);
-    }
-    return []; // retorna array vazio em caso de falha
-  }
+// ===============================
+// FUNÇÃO 1 — Buscar Produto por ID
+// ===============================
+function buscarProdutoPorId(produtos, id) {
+    return produtos.find(prod => prod.id === id);
 }
 
-// Exemplo de uso:
-(async () => {
-  const produtos = await carregarProdutos("./input.json");
-  console.log(produtos);
-})();
 
 
-const produtos = [
-    { id: 1, nome: "Camiseta", preco: 29.99 },
-    { id: 2, nome: "Calça", preco: 59.99 }
-];
+// ===============================
+// FUNÇÃO 2 — Cadastrar Produto
+// ===============================
+async function cadastrarProduto(produtos) {
 
-console.log(buscarProdutoPorId(produtos, 2)); // { id: 2, nome: "Calça", preco: 59.99 }
-console.log(buscarProdutoPorId(produtos, 3)); // undefined
+    const id_prod = await input("Digite o ID do produto: ");
 
-function atualizarProduto() {
-    // 1. Pergunta o ID do produto que será atualizado
-    const id = prompt("Digite o ID do produto que deseja atualizar:");
-
-    // 2. Busca o produto usando a função fornecida no outro arquivo
-    const produto = buscarProdutoPorId(id);
-
-    // 3. Se não encontrar, exibe erro
-    if (!produto) {
-        alert("❌ Erro: Produto não encontrado!");
+    const produtoExistente = produtos.find(prod => prod.id === id_prod);
+    if (produtoExistente) {
+        console.log("❌ Já existe um produto com este ID. Cadastro não realizado.");
         return;
     }
 
-    // 4. Mostra os dados atuais para facilitar a edição
-    alert(
-        "Produto encontrado:\n" +
-        "Nome atual: " + produto.nome + "\n" +
-        "Categoria atual: " + produto.categoria + "\n" +
-        "Preço atual: R$ " + produto.preco
-    );
+    const nome = await input("Digite o nome do produto: ");
+    const categoria = await input("Digite a categoria do produto: ");
+    const preco = Number(await input("Digite o preço do produto: "));
+    const quantidadeEmEstoque = Number(await input("Digite a quantidade em estoque: "));
 
-    // 5. Pergunta novos valores (se o usuário só apertar Enter, mantém o valor atual)
-    const novoNome = prompt("Novo nome do produto:", produto.nome);
-    const novaCategoria = prompt("Nova categoria:", produto.categoria);
-    const novoPreco = prompt("Novo preço:", produto.preco);
+    const produto = {
+        id: id_prod,
+        nome,
+        categoria,
+        preco,
+        quantidadeEmEstoque
+    };
 
-    // 6. Atualiza SOMENTE se o usuário digitou algo
-    if (novoNome.trim() !== "") produto.nome = novoNome;
-    if (novaCategoria.trim() !== "") produto.categoria = novaCategoria;
-    if (novoPreco.trim() !== "" && !isNaN(novoPreco)) produto.preco = Number(novoPreco);
-
-    // 7. Confirma a atualização
-    alert("✅ Produto atualizado com sucesso!");
+    produtos.push(produto);
+    console.log("✅ Produto cadastrado com sucesso!");
 }
 
-const readline = require('readline');
 
-// ------------------------
-// FUNÇÃO 3 – Cadastrar Produto
-// ------------------------
-function cadastrarProduto(produtos) {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
 
-    rl.question("Digite o ID do produto: ", (id_prod) => {
+// ===============================
+// FUNÇÃO 3 — Atualizar Produto
+// ===============================
+async function atualizarProduto(produtos) {
+    const id = await input("Digite o ID do produto que deseja atualizar: ");
 
-        const produtoExistente = produtos.find(prod => prod.id === id_prod);
-        if (produtoExistente) {
-            console.log("Erro: Já existe um produto com este ID. Cadastro não realizado.");
-            rl.close();
-            return;
-        }
+    const produto = buscarProdutoPorId(produtos, id);
 
-        rl.question("Digite o nome do produto: ", (nome) => {
-            rl.question("Digite a categoria do produto: ", (categoria) => {
-                rl.question("Digite o preço do produto: ", (precoStr) => {
-                    const preco = parseFloat(precoStr);
+    if (!produto) {
+        console.log("❌ Produto não encontrado!");
+        return;
+    }
 
-                    rl.question("Digite a quantidade em estoque: ", (quantidadeStr) => {
-                        const quantidadeEmEstoque = parseInt(quantidadeStr);
+    console.log("\n--- Produto encontrado ---");
+    console.log(produto);
 
-                        const produto = {
-                            id: id_prod,
-                            nome: nome,
-                            categoria: categoria,
-                            preco: preco,
-                            quantidadeEmEstoque: quantidadeEmEstoque
-                        };
+    const novoNome = await input(`Novo nome (${produto.nome}): `);
+    const novaCategoria = await input(`Nova categoria (${produto.categoria}): `);
+    const novoPrecoStr = await input(`Novo preço (${produto.preco}): `);
 
-                        produtos.push(produto);
-                        console.log("Produto cadastrado com sucesso!");
+    if (novoNome.trim()) produto.nome = novoNome;
+    if (novaCategoria.trim()) produto.categoria = novaCategoria;
+    if (novoPrecoStr.trim()) produto.preco = Number(novoPrecoStr);
 
-                        rl.close();
-                    });
-                });
-            });
-        });
-    });
+    console.log("✅ Produto atualizado com sucesso!");
 }
 
-// ------------------------
-// FUNÇÃO 8 – Filtrar produtos por categoria
-// ------------------------
-function filtrarPorCategoria(produtos, categoria) {
-    const filtrados = produtos.filter(produto => produto.categoria === categoria);
+
+
+// ===============================
+// FUNÇÃO 4 — Filtrar por Categoria
+// ===============================
+async function filtrarPorCategoria(produtos) {
+    const categoria = await input("Digite a categoria para filtrar: ");
+
+    const filtrados = produtos.filter(p => p.categoria === categoria);
 
     if (filtrados.length === 0) {
         console.log("\nNenhum produto encontrado nessa categoria.");
@@ -234,7 +88,96 @@ function filtrarPorCategoria(produtos, categoria) {
         console.log("\n=== PRODUTOS DA CATEGORIA:", categoria, "===\n");
         console.log(filtrados);
     }
-
-    return filtrados;
 }
 
+
+
+// ===============================
+// FUNÇÃO 5 — Carregar Produtos de JSON
+// ===============================
+async function carregarProdutos(caminhoArquivo) {
+    try {
+        const conteudo = await fs.readFile(caminhoArquivo, "utf8");
+        const produtos = JSON.parse(conteudo);
+        console.log("📂 Produtos carregados do arquivo!");
+        return produtos;
+    } catch (erro) {
+        console.log("⚠ Erro ao carregar arquivo:", erro.message);
+        return [];
+    }
+}
+
+
+
+// ===============================
+// FUNÇÃO 6 — Salvar Produtos em JSON
+// ===============================
+async function salvarProdutos(produtos, caminhoArquivo) {
+    try {
+        await fs.writeFile(caminhoArquivo, JSON.stringify(produtos, null, 4));
+        console.log("💾 Produtos salvos com sucesso!");
+    } catch (erro) {
+        console.log("⚠ Erro ao salvar arquivo:", erro.message);
+    }
+}
+
+
+
+// ===============================
+// FUNÇÃO 10 — MAIN COM MENU
+// ===============================
+async function main() {
+
+    let produtos = [];
+    let opcao = "";
+
+    do {
+        console.log("\n========== MENU DO SISTEMA ==========");
+        console.log("1 – Cadastrar produto");
+        console.log("2 – Atualizar produto");
+        console.log("3 – Filtrar produto por categoria");
+        console.log("4 – Carregar produtos do arquivo JSON");
+        console.log("5 – Salvar produtos no arquivo JSON");
+        console.log("0 – Sair");
+
+        opcao = await input("Escolha uma opção: ");
+
+        switch (opcao) {
+
+            case "1":
+                await cadastrarProduto(produtos);
+                break;
+
+            case "2":
+                await atualizarProduto(produtos);
+                break;
+
+            case "3":
+                await filtrarPorCategoria(produtos);
+                break;
+
+            case "4":
+                produtos = await carregarProdutos("./produtos.json");
+                break;
+
+            case "5":
+                await salvarProdutos(produtos, "./produtos.json");
+                break;
+
+            case "0":
+                console.log("👋 Encerrando o sistema...");
+                break;
+
+            default:
+                console.log("⚠ Opção inválida! Tente novamente.");
+        }
+
+    } while (opcao !== "0");
+}
+
+
+
+// ===============================
+// EXECUTAR SISTEMA
+// ===============================
+main();
