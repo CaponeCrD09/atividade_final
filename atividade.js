@@ -139,3 +139,38 @@ const produtos = [
 
 console.log(buscarProdutoPorId(produtos, 2)); // { id: 2, nome: "Calça", preco: 59.99 }
 console.log(buscarProdutoPorId(produtos, 3)); // undefined
+
+function atualizarProduto() {
+    // 1. Pergunta o ID do produto que será atualizado
+    const id = prompt("Digite o ID do produto que deseja atualizar:");
+
+    // 2. Busca o produto usando a função fornecida no outro arquivo
+    const produto = buscarProdutoPorId(id);
+
+    // 3. Se não encontrar, exibe erro
+    if (!produto) {
+        alert("❌ Erro: Produto não encontrado!");
+        return;
+    }
+
+    // 4. Mostra os dados atuais para facilitar a edição
+    alert(
+        "Produto encontrado:\n" +
+        "Nome atual: " + produto.nome + "\n" +
+        "Categoria atual: " + produto.categoria + "\n" +
+        "Preço atual: R$ " + produto.preco
+    );
+
+    // 5. Pergunta novos valores (se o usuário só apertar Enter, mantém o valor atual)
+    const novoNome = prompt("Novo nome do produto:", produto.nome);
+    const novaCategoria = prompt("Nova categoria:", produto.categoria);
+    const novoPreco = prompt("Novo preço:", produto.preco);
+
+    // 6. Atualiza SOMENTE se o usuário digitou algo
+    if (novoNome.trim() !== "") produto.nome = novoNome;
+    if (novaCategoria.trim() !== "") produto.categoria = novaCategoria;
+    if (novoPreco.trim() !== "" && !isNaN(novoPreco)) produto.preco = Number(novoPreco);
+
+    // 7. Confirma a atualização
+    alert("✅ Produto atualizado com sucesso!");
+}
