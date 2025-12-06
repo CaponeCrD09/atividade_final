@@ -4,6 +4,8 @@
 const input = require("./input");
 const fs = require("fs").promises;
 
+produtos = [];1
+
 // ===============================
 // FUNÇÃO 1 — Buscar Produto por ID
 // ===============================

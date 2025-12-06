@@ -1,0 +1,9 @@
+[
+    {
+        "id": "1",
+        "nome": "batatinha",
+        "categoria": "legumes",
+        "preco": 45,
+        "quantidadeEmEstoque": 23
+    }
+]
