@@ -132,3 +132,10 @@ async function carregarProdutos(caminhoArquivo) {
 })();
 
 
+const produtos = [
+    { id: 1, nome: "Camiseta", preco: 29.99 },
+    { id: 2, nome: "Calça", preco: 59.99 }
+];
+
+console.log(buscarProdutoPorId(produtos, 2)); // { id: 2, nome: "Calça", preco: 59.99 }
+console.log(buscarProdutoPorId(produtos, 3)); // undefined
