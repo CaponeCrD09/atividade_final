@@ -1,3 +1,46 @@
+const input = require("./input"); // seu módulo de entrada
+
+(async () => {
+    let produtos = [
+        { id: 1, nome: "Mouse" },
+        { id: 2, nome: "Teclado" },
+        { id: 3, nome: "Monitor" }
+    ];
+
+    console.log("Informe o ID do produto a ser removido:");
+    const idRemover = Number(await input());
+
+    // Localiza o índice
+    const indice = produtos.findIndex(p => p.id === idRemover);
+
+    if (indice === -1) {
+        console.log("Produto não encontrado!");
+    } else {
+        produtos.splice(indice, 1);
+        console.log("Produto removido com sucesso!");
+    }
+
+    console.log("Lista final de produtos:", produtos);
+})();
+
+function ordenarPorPreco(produtos, ordem) {
+    if (!Array.isArray(produtos) || produtos.length === 0) {
+        console.log("Nenhum produto para ordenar.");
+        return;
+    }
+
+    if (ordem === "asc") {
+        produtos.sort((a, b) => a.preco - b.preco);
+    } 
+    else if (ordem === "desc") {
+        produtos.sort((a, b) => b.preco - a.preco);
+    } 
+    else {
+        console.log('Ordem inválida. Use "asc" ou "desc".');
+    }
+}
+
+
 const fs = require("fs"); // IMPORTAÇÃO QUE FALTAVA
 
 // Array global de produtos (exemplo)
